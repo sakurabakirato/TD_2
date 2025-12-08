@@ -130,7 +130,11 @@ Vector3 Boss::GetWorldPosition()
 }
 
 // 02_10 スライド20枚目
-void Boss::OnCollision(const Player* player) { (void)player; }
+void Boss::OnCollision(const Player* player) 
+{ 
+	(void)player; 
+	hp_ -= 10;
+}
 
 void Boss::CheckWallAndReverse() {
 

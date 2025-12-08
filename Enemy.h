@@ -40,7 +40,7 @@ public:
 	// 02_10 スライド14枚目 ワールド座標を取得
 	Vector3 GetWorldPosition();
 	// 02_10 スライド20枚目 衝突応答
-	void OnCollision(const Player* player);
+	void OnCollision(Player* player);
 
 	// ふるまい
 	enum class Behavior 
@@ -52,11 +52,11 @@ public:
 
 	};
 
+	bool isDead = false;
+
 	bool IsDead() const { return isDead; }
 
 	bool IsCollisionDisabled() const { return isCollisionDisabled; }
-
-	bool isDead = false;
 
 private:
 	// ワールド変換データ
@@ -67,7 +67,7 @@ private:
 
 	UpData* upData = nullptr;
 
-	Player* player_ = nullptr;
+	/*Player* player_ = nullptr;*/
 
 	// テクスチャハンドル
 	//  uint32_t textureHandle_ = 0u;
@@ -106,4 +106,6 @@ private:
 	Behavior behavior = Behavior::kWalk;
 	// 次の振るまいリクエスト
 	Behavior behaviorRequest = Behavior::kUnknown;
+
+
 };

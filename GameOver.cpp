@@ -9,7 +9,7 @@ GameOver::~GameOver() {
 
 void GameOver::Initialize() {
 
-	/*modelOver_ = Model::CreateFromOBJ("GameOver", true);*/
+	modelOver_ = Model::CreateFromOBJ("GameOver", true);
 	/*modelSpace_ = Model::CreateFromOBJ("space");*/
 
 	skydome_ = new Skydome();

@@ -74,8 +74,8 @@ public:
 	AABB GetAABB();
 
 	// 02_10 21枚目 衝突応答
-	void OnCollision(const Enemy* enemy);
-	void OnCollision(const Boss* boss);
+	void OnCollision(Enemy* enemy);
+	void OnCollision(Boss* boss);
 	void OnCollision(const FallingBlock* FallingBlock);
 
 	// 02_12 11枚目 デスフラグ
@@ -137,7 +137,6 @@ public:
 
 private:
 
-	Enemy* enemy_= nullptr;
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 

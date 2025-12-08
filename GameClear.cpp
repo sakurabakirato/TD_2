@@ -2,14 +2,16 @@
 #include "Math.h"
 #include <numbers>
 
-GameClear::~GameClear() {
+GameClear::~GameClear() 
+{
 	delete modelSpace_;
 	delete modelClear_;
 }
 
-void GameClear::Initialize() {
+void GameClear::Initialize() 
+{
 
-	//modelClear_ = Model::CreateFromOBJ("GameClear", true);
+	modelClear_ = Model::CreateFromOBJ("GameClear", true);
 	/*modelSpace_ = Model::CreateFromOBJ("space");*/
 
 	skydome_ = new Skydome();
@@ -39,10 +41,12 @@ void GameClear::Initialize() {
 }
 
 
-void GameClear::Update() {
+void GameClear::Update() 
+{
 
 	// 02_12 27枚目
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE) && Input::GetInstance()->PushKey(DIK_SPACE)) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE) && Input::GetInstance()->PushKey(DIK_SPACE)) 
+	{
 		finished_ = true;
 	}
 
@@ -64,7 +68,8 @@ void GameClear::Update() {
 	skydome_->Update();
 }
 
-void GameClear::Draw() {
+void GameClear::Draw() 
+{
 
 	 DirectXCommon* dxCommon_ = DirectXCommon::GetInstance();
 	// コマンドリストの取得

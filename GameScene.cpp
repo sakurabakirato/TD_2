@@ -19,8 +19,10 @@ GameScene::~GameScene()
 	delete modelBoss_;
 
 	delete player_;
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
-		for (WorldTransform*& worldTransformBlock : worldTransformBlockLine) {
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) 
+	{
+		for (WorldTransform*& worldTransformBlock : worldTransformBlockLine) 
+		{
 			delete worldTransformBlock;
 		}
 	}
@@ -51,6 +53,9 @@ void GameScene::Initialize()
 
 	fallingBlockModel_ = Model::CreateFromOBJ("block");
 
+	/*gameClearSprite_ = Sprite::Create("Resources/gameclear.png");
+	gameOverSprite_ = Sprite::Create("Resources/gameover.png");*/
+
 	debugCamera_ = new DebugCamera(1280, 720);
 
 	// 自キャラの生成
@@ -78,7 +83,7 @@ void GameScene::Initialize()
 	skydome_->Initialize(modelSkydome_, &camera_);
 
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/blocks_csv/blocks.csv");
 
 	GenerateBlocks();
 
@@ -110,7 +115,8 @@ void GameScene::Initialize()
   
 	
 	// 02_10 5枚目（for文の中身全部）
-	for (int32_t i = 0; i < 3; ++i) {
+	for (int32_t i = 0; i < 3; ++i) 
+	{
 		Enemy* newEnemy = new Enemy();
 
 		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(14 + i * 3, 18);
@@ -135,7 +141,8 @@ void GameScene::Initialize()
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
 }
 
-void GameScene::GenerateBlocks() {
+void GameScene::GenerateBlocks() 
+{
 	// 要素数
 	uint32_t numBlockVirtical = mapChipField_->GetNumBlockVirtical();
 	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
@@ -193,6 +200,21 @@ void GameScene::Update()
 		{
 			finished_ = true;
 		}
+	case Phase::kGameClear:
+		fade_->Update();
+		if (fade_->IsFinished())
+		{
+			finished_ = true;
+		}
+		break;
+	case Phase::kGameOver:
+		fade_->Update();
+		if (fade_->IsFinished())
+		{
+			finished_ = true;
+		}
+		break;
+
 	}
 
 	//  skydome生成
@@ -363,8 +385,6 @@ void GameScene::CheckAllCollisions()
 				player_->OnCollision(enemy);
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
-				//ボスの衝突時コールバックを呼び出す
-				boss_->OnCollision(player_);
 
 			}
 		}
@@ -427,12 +447,31 @@ void GameScene::ChangePhase()
 
 			const Vector3& deathParticlesPosition = player_->GetWorldPosition();
 
-			/*deathParticles_ = new DeathParticles;*/
 			deathParticles_->Initialize(deathParticle_model_, &camera_, deathParticlesPosition);
 		}
+
+		if (boss_->IsDead())
+		{
+			phase_ = Phase::kGameClear;
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
+		}
+
+
 		break;
 	case Phase::kDeath:
 
+		// デスパーティクルが終了したらゲームオーバー
+		if (deathParticles_ && deathParticles_->IsFinished())
+		{
+			phase_ = Phase::kGameOver;
+			fade_->Start(Fade::Status::FadeIn, 1.0f);   // ゲームオーバー画面をフェードイン
+		}
+
+
+		break;
+	case Phase::kGameClear:
+		break;
+	case Phase::kGameOver:
 		break;
 	}
 }

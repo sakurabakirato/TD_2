@@ -41,6 +41,8 @@ public:
 	bool ShouldDropBlock() const { return canBlockAttack_; }
 	void ConsumeBlockAttack() { canBlockAttack_ = false; }
 
+	bool IsDead() const { return hp_ <= 0; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -81,11 +83,12 @@ private:
 
 	MapChipField* mapChipField_ = nullptr;
 
-	AABB aabb_;
+	AABB aabb_ = {};
 
 	int blockAttackTimer_ = 0;
 	bool canBlockAttack_ = true;
 
+	int hp_ = 100;
 
 
 };

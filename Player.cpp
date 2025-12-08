@@ -24,6 +24,10 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position)
 	worldTransform_.translation_ = position;
 
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
+
+	modelAttack = Model::CreateFromOBJ("hit_effect"); 
+
+	worldTransformAttack.Initialize();
 }
 
 void Player::InputMove() 
@@ -429,6 +433,38 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner)
 void Player::UpDate() 
 {
 
+
+	// ▼▼ 状態遷移処理（絶対に必要） ▼▼
+	if (behaviorRequest_ != Behavior::kUnknown)
+	{
+		behavior_ = behaviorRequest_;
+		behaviorRequest_ = Behavior::kUnknown;
+
+		switch (behavior_)
+		{
+		case Behavior::kRoot:
+			BehaviorRootInitialize();
+			break;
+
+		case Behavior::kAttack:
+			BehaviorAttackInitialize();
+			break;
+		}
+	}
+
+	// ▼▼ 状態ごとの更新処理 ▼▼
+	switch (behavior_)
+	{
+	case Behavior::kRoot:
+		BehaviorRootUpdate();
+		break;
+
+	case Behavior::kAttack:
+		BehaviorAttackUpdate();
+		break;
+	}
+
+
 	// 移動入力(02_07 スライド10枚目)
 	InputMove();
 
@@ -661,25 +697,22 @@ AABB Player::GetAABB()
 }
 
 // 02_10 21枚目
-void Player::OnCollision(const Enemy* enemy) 
+void Player::OnCollision(Enemy* enemy) 
 {
-	(void)enemy;
 
-	// 02_12 12枚目 書き換え
-	enemy_->isDead= false;
-	isDead_ = true;
+	if (!enemy) { return; } // 念のため
 
-	if (IsAttack()) 
-	{
-
-		enemy_->isDead = true;
-		isDead_ = false;
-
+	// 攻撃中なら敵を倒す
+	if (IsAttack()) {
+		enemy->isDead = true;
 		return;
 	}
+
+	// 攻撃していないならプレイヤーが死ぬ
+	isDead_ = true;
 }
 
-void Player::OnCollision(const Boss* boss)
+void Player::OnCollision(Boss* boss)
 {
 	(void)boss;
 

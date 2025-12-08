@@ -13,7 +13,8 @@
 using namespace KamataEngine;
 
 // ゲームシーン
-class GameScene {
+class GameScene 
+{
 public:
 	// 初期化
 	void Initialize();
@@ -38,11 +39,14 @@ public:
 	bool IsFinished() const { return finished_; }
 
 private:
-	enum class Phase {
+	enum class Phase 
+	{
 		kFadeIn,
 		kPlay, // ゲームプレイ
 		kDeath, // デス演出
 		kFadeOut,
+		kGameClear,
+		kGameOver
 	};
 
 	// 02_12 4枚目 ゲームの現在フェーズ（変数）
@@ -110,5 +114,8 @@ private:
 
 	std::vector<FallingBlock*> fallingBlocks_;
 	Model* fallingBlockModel_ = nullptr;
+
+	Sprite* gameClearSprite_ = nullptr;
+	Sprite* gameOverSprite_ = nullptr;
 
 };

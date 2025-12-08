@@ -73,22 +73,22 @@ void Enemy::UpDate()
 		break;
 
 		// 02_09 16枚目 移動
-		worldTransform_.translation_ += velocity_;
+		/*worldTransform_.translation_ += velocity_;*/
 
 		// 02_09 20枚目
-		walkTimer += 1.0f / 60.0f;
+		/*walkTimer += 1.0f / 60.0f;*/
 
 		// 02_09 23枚目 回転アニメーション
 		// worldTransform_.rotation_.x = std::sin(std::numbers::pi_v<float> * 2.0f * walkTimer / kWalkMotionTime);
 
-		float param = std::sin(std::numbers::pi_v<float> *2.0f * walkTimer / kWalkMotionTime);
+		//float param = std::sin(std::numbers::pi_v<float> *2.0f * walkTimer / kWalkMotionTime);
 
-		float degree = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
+		//float degree = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
 
-		worldTransform_.rotation_.x = degree * (std::numbers::pi_v<float> / 180.0f);
+		//worldTransform_.rotation_.x = degree * (std::numbers::pi_v<float> / 180.0f);
 
-		// 02_09 スライド8枚目 ワールド行列更新
-		upData->WorldTransformUpData(worldTransform_);
+		//// 02_09 スライド8枚目 ワールド行列更新
+		//upData->WorldTransformUpData(worldTransform_);
 	}
 }
 
@@ -122,7 +122,7 @@ Vector3 Enemy::GetWorldPosition()
 }
 
 // 02_10 スライド20枚目
-void Enemy::OnCollision(const Player* player) 
+void Enemy::OnCollision(Player* player) 
 { 
 	(void)player; 
 
@@ -133,7 +133,7 @@ void Enemy::OnCollision(const Player* player)
 	}
 	isDead = true;
 	//plaeyr
-	if (player_->IsAttack()) 
+	if (player->IsAttack()) 
 	{
 
 		if (gameScene == 1) 

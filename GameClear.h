@@ -40,9 +40,6 @@ private:
 
 	Model* modelSkydome_ = nullptr;
 
-	//Skydome* skydome_ = nullptr;
-
-
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 

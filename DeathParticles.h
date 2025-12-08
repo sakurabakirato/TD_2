@@ -13,7 +13,8 @@ using namespace KamataEngine;
 /// デス演出用パーティクル
 /// </summary>
 // 02_11_7枚目 デス演出用パーティクル
-class DeathParticles {
+class DeathParticles 
+{
 public:
 	// 02_11_8枚目 Initialize,Update,Draw関数追加
 	void Initialize(Model* model, Camera* camera, const Vector3& position);
@@ -52,13 +53,13 @@ private:
 	float counter_ = 0.0f;
 
 	// 02_11_30枚目 色変更オブジェクト
-	ObjectColor objectColor_;
+	ObjectColor objectColor_ = {};
 
 	// 02_11_30枚目 色の数値
-	Vector4 color_;
+	Vector4 color_ = {};
 
 	UpData* upData = nullptr;
 
 	// ワールド変換データ
-	WorldTransform worldTransform_;
+	WorldTransform worldTransform_ = {};
 };

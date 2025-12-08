@@ -25,9 +25,9 @@ private:
     Model* model_ = nullptr;
     Camera* camera_ = nullptr;
 
-    Vector3 position_;
-    Vector3 velocity_;
-    AABB aabb_;
+    Vector3 position_ = {};
+    Vector3 velocity_ = {};
+    AABB aabb_ = {};
     bool isDead_ = false;
 };
 
