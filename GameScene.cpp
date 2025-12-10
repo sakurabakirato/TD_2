@@ -14,8 +14,6 @@ GameScene::~GameScene()
 
 	delete modelPlayer_;
 
-	delete boss_;
-
 	delete modelBoss_;
 
 	delete player_;
@@ -30,14 +28,14 @@ GameScene::~GameScene()
 
 	delete mapChipField_;
 
-	// 02_09 10枚目 敵クラス削除
-	// delete enemy_;
 
 	// 02_10 6枚目 敵クラス削除
 	for (Enemy* enemy : enemies_) 
 	{
 		delete enemy;
 	}
+
+	delete boss_;
 
 	// 02_11_17枚目
 	delete deathParticles_;
@@ -53,8 +51,10 @@ void GameScene::Initialize()
 
 	fallingBlockModel_ = Model::CreateFromOBJ("block");
 
-	/*gameClearSprite_ = Sprite::Create("Resources/gameclear.png");
-	gameOverSprite_ = Sprite::Create("Resources/gameover.png");*/
+	// サウンドデータの読み込み
+	BGMHandle = Audio::GetInstance()->LoadWave("sound/maou_game_village10.mp3");
+
+	voiceHandle = Audio::GetInstance()->PlayWave(BGMHandle, true, 0.2f);
 
 	debugCamera_ = new DebugCamera(1280, 720);
 
@@ -200,6 +200,7 @@ void GameScene::Update()
 		{
 			finished_ = true;
 		}
+		break;
 	case Phase::kGameClear:
 		fade_->Update();
 		if (fade_->IsFinished())
@@ -223,7 +224,8 @@ void GameScene::Update()
 	//  自キャラの更新
 	player_->UpDate();
 
-	for (Enemy* enemy : enemies_) {
+	for (Enemy* enemy : enemies_) 
+	{
 		enemy->UpDate();
 	}
 
@@ -327,6 +329,11 @@ void GameScene::Draw()
 		player_->Draw();
 	}
 
+	if (phase_ == Phase::kGameOver)
+	{
+		gameOverSprite_->Draw();
+	}
+
 	// 天球描画
 	skydome_->Draw();
 
@@ -335,8 +342,9 @@ void GameScene::Draw()
 		enemy->Draw();
 	}
 
+
 	boss_->Draw();
-	
+
 	// 落下ブロック描画
 	for (FallingBlock* block : fallingBlocks_)
 	{
@@ -366,7 +374,7 @@ void GameScene::CheckAllCollisions()
 		// 自キャラの座標
 		aabb1 = player_->GetAABB();
 
-		// 自キャラと敵弾全ての当たり判定
+		// 自キャラと敵全ての当たり判定
 		for (Enemy* enemy : enemies_) 
 		{
 
@@ -375,7 +383,7 @@ void GameScene::CheckAllCollisions()
 				continue; // 死んでいる敵は当たり判定を行わない
 			}
 
-			// 敵弾の座標
+			// 敵の座標
 			aabb2 = enemy->GetAABB();
 
 			// AABB同士の交差判定
@@ -393,16 +401,22 @@ void GameScene::CheckAllCollisions()
 
 #pragma region 自キャラとボスの当たり判定
 	{
-		// 自キャラの座標
-		aabb1 = player_->GetAABB();
-		// ボスの座標
-		aabb2 = boss_->GetAABB();
-
-		// AABB同士の交差判定
-		if (IsCollision(aabb1, aabb2))
+		if (!boss_->IsDead())   // これを追加！
 		{
-			player_->OnCollision(boss_);
-			boss_->OnCollision(player_);
+
+			// 自キャラの座標
+			aabb1 = player_->GetAABB();
+			// ボスの座標
+			aabb2 = boss_->GetAABB();
+
+
+
+			// AABB同士の交差判定
+			if (IsCollision(aabb1, aabb2))
+			{
+				player_->OnCollision(boss_);
+				boss_->OnCollision(player_);
+			}
 		}
 	}
 #pragma endregion
@@ -466,7 +480,6 @@ void GameScene::ChangePhase()
 			phase_ = Phase::kGameOver;
 			fade_->Start(Fade::Status::FadeIn, 1.0f);   // ゲームオーバー画面をフェードイン
 		}
-
 
 		break;
 	case Phase::kGameClear:

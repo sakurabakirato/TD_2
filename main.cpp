@@ -41,61 +41,69 @@ void ChangeScene()
 			gameScene = new GameScene;
 			gameScene->Initialize();
 
-			gameOver = new GameOver;
-			gameOver->Initialize();
-
-			gameClear = new GameClear;
-			gameClear->Initialize();
-
 		}
 		break;
-
 	case Scene::kGame:
-		// 02_12 30枚目
-		if (gameScene->IsFinished()) {
-			// シーン変更
-			scene = Scene::kClear;
-			delete gameScene;
-			gameScene = nullptr;
-			titleScene = new TitleScene;
-			titleScene->Initialize();
+		if (gameScene && gameScene->IsFinished())
+		{
+			// GameScene から「どちらで終了したか」を取得する
+			if (gameScene->IsGameClear()) 
+			{
+				delete gameScene;
+				gameScene = nullptr;
+
+				gameClear = new GameClear();
+				gameClear->Initialize();
+
+				scene = Scene::kClear;
+			} 
+			else 
+			{
+				delete gameScene;
+				gameScene = nullptr;
+
+				gameOver = new GameOver();
+				gameOver->Initialize();
+
+				scene = Scene::kOver;
+			}
 		}
 		break;
 
 	case Scene::kClear:
-		if (gameScene->IsFinished()) {
-			titleScene = new TitleScene;
-			titleScene->Initialize();
-			scene = Scene::kClear;
+		if (gameClear && gameClear->IsFinished())
+		{
 			delete gameClear;
-			gameScene = nullptr;
-		} else if (gameScene->IsFinished()) {
-			scene = Scene::kOver;
-			titleScene = new TitleScene;
+			gameClear = nullptr;
+
+			titleScene = new TitleScene();
 			titleScene->Initialize();
-			delete gameScene;
-			gameScene = nullptr;
+
+			scene = Scene::kTitle;
 		}
 		break;
 
 	case Scene::kOver:
-		// 02_12 30枚目
-		if (gameScene->IsFinished()) {
-			// シーン変更
-			scene = Scene::kTitle;
-			delete gameScene;
-			gameScene = nullptr;
-			titleScene = new TitleScene;
+		if (gameOver && gameOver->IsFinished())
+		{
+			delete gameOver;
+			gameOver = nullptr;
+
+			titleScene = new TitleScene();
 			titleScene->Initialize();
+
+			scene = Scene::kTitle;
 		}
 		break;
 	}
 }
 
 // 02_12 31枚目
-void UpDataScene() {
+void UpDataScene() 
+{
 
-	switch (scene) {
+	switch (scene) 
+	{
 	case Scene::kTitle:
 		titleScene->Update();
 		break;
@@ -103,15 +111,19 @@ void UpDataScene() {
 		gameScene->Update();
 		break;
 	case Scene::kClear:
+		gameClear->Update();
 		break;
 	case Scene::kOver:
+		gameOver->Update();
 		break;
 	}
 }
 
 // 02_12 32枚目
-void DrawScene() {
-	switch (scene) {
+void DrawScene() 
+{
+	switch (scene) 
+	{
 	case Scene::kTitle:
 		titleScene->Draw();
 		break;
@@ -119,10 +131,10 @@ void DrawScene() {
 		gameScene->Draw();
 		break;
 	case Scene::kClear:
-
+		gameClear->Draw();
 		break;
 	case Scene::kOver:
-
+		gameOver->Draw();
 		break;
 	}
 }
@@ -141,10 +153,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// gameScene->Initialize();
 
 	// メインループ
-	while (true) {
+	while (true) 
+	{
 
 		// エンジンの更新
-		if (KamataEngine::Update()) {
+		if (KamataEngine::Update()) 
+		{
 			break;
 		}
 
@@ -168,6 +182,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 02_12 35枚目 各種解放
 	delete titleScene;
 	delete gameScene;
+	delete gameClear;
+	delete gameOver;
 
 	// nullptrの代入
 	gameScene = nullptr;

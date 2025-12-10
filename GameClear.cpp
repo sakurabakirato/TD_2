@@ -82,7 +82,7 @@ void GameClear::Draw()
 	skydome_->Draw();
 
 	modelClear_->Draw(worldTransformClear_, camera_);
-	modelSpace_->Draw(worldTransformSpace_, camera_);
+	/*modelSpace_->Draw(worldTransformSpace_, camera_);*/
 
 	Model::PostDraw();
 }

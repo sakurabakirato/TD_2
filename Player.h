@@ -241,13 +241,7 @@ private:
 	// 02_12 11枚目 デスフラグ
 	bool isDead_ = false;
 
-
 	// 攻撃ギミックの媒介変数
 	uint32_t attackParameter = 0;
-
-	
-
-
-	
 
 };

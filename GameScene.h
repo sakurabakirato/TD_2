@@ -38,6 +38,8 @@ public:
 	// 02_12 26枚目	デスフラグのgetter
 	bool IsFinished() const { return finished_; }
 
+	bool IsGameClear() const { return isGameClear_; }
+
 private:
 	enum class Phase 
 	{
@@ -117,5 +119,11 @@ private:
 
 	Sprite* gameClearSprite_ = nullptr;
 	Sprite* gameOverSprite_ = nullptr;
+
+	bool isGameClear_ = false; // ボス撃破
+
+	//BGM
+	uint32_t BGMHandle = 0;
+	uint32_t voiceHandle = 0;
 
 };

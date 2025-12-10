@@ -465,49 +465,6 @@ void Player::UpDate()
 	}
 
 
-	// 移動入力(02_07 スライド10枚目)
-	InputMove();
-
-	// 移動入力
-	// 衝突情報を初期化
-	CollisionMapInfo collisionMapInfo = {};
-	collisionMapInfo.move = velocity_;
-	// 移動量に速度の値をコピー
-	//  マップ衝突チェック(02_07 スライド13枚目)
-	CheckMapCollision(collisionMapInfo);
-	
-
-	// worldTransform_.translation_ = Add(velocity_, worldTransform_.translation_);
-
-	// 移動(02_07 スライド36枚目)
-	worldTransform_.translation_ += collisionMapInfo.move;
-
-	// 天井接触による落下開始(02_07 スライド38枚目)
-	if (collisionMapInfo.ceiling) 
-	{
-		velocity_.y = 0;
-	}
-
-	// 02_08 スライド27枚目 壁接触している場合の処理
-	UpdateOnWall(collisionMapInfo);
-
-	// 接地判定
-	UpdateOnGround(collisionMapInfo);
-
-
-	// 旋回制御
-	if (turnTimer_ > 0.0f) 
-	{
-		// タイマーを進める
-		turnTimer_ = std::max(turnTimer_ - (1.0f / 60.0f), 0.0f);
-
-		float destinationRotationYTable[] = {std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> * 3.0f / 2.0f};
-
-		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
-
-		worldTransform_.rotation_.y = EaseInOut(destinationRotationY, turnFirstRotationY_, turnTimer_ / kTimeTurn);
-	}
-
 	upData->WorldTransformUpData(worldTransform_);
 }
 
@@ -703,7 +660,8 @@ void Player::OnCollision(Enemy* enemy)
 	if (!enemy) { return; } // 念のため
 
 	// 攻撃中なら敵を倒す
-	if (IsAttack()) {
+	if (IsAttack()) 
+	{
 		enemy->isDead = true;
 		return;
 	}
@@ -714,7 +672,10 @@ void Player::OnCollision(Enemy* enemy)
 
 void Player::OnCollision(Boss* boss)
 {
-	(void)boss;
+
+	// ボスが死んでいるならダメージを受けない
+	if (boss->IsDead())
+		return;
 
 	isDead_ = true;
 }

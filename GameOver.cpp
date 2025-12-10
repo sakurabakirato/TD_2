@@ -79,7 +79,7 @@ void GameOver::Draw() {
 
 	modelOver_->Draw(worldTransformOver_, camera_);
 	
-	modelSpace_->Draw(worldTransformSpace_, camera_);
+	/*modelSpace_->Draw(worldTransformSpace_, camera_);*/
 
 	Model::PostDraw();
 }
