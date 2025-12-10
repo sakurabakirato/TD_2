@@ -59,10 +59,10 @@ void GameClear::Update()
 
 	camera_.TransferMatrix();
 
-	upData->WorldTransformUpData(worldTransformClear_);
+	upDate->WorldTransformUpData(worldTransformClear_);
 
 	// アフィン変換～DirectXに転送(タイトル座標)
-	upData->WorldTransformUpData(worldTransformSpace_);
+	upDate->WorldTransformUpData(worldTransformSpace_);
 
 		//  skydome生成
 	skydome_->Update();

@@ -2,7 +2,7 @@
 #include "Math.h"
 #include <KamataEngine.h>
 
-class UpData {
+class UpDate {
 
 public:
 	void WorldTransformUpData(KamataEngine::WorldTransform& worldTransform);

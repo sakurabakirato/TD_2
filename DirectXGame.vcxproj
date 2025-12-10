@@ -121,7 +121,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="TitleScene.cpp" />
-    <ClCompile Include="Updata.cpp" />
+    <ClCompile Include="Update.cpp" />
     <ClCompile Include="worldMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -215,7 +215,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="TitleScene.h" />
-    <ClInclude Include="Updata.h" />
+    <ClInclude Include="Update.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="worldMatrix.h" />

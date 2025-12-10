@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "MapChipField.h"
 #include "Math.h"
-#include "UpData.h"
+#include "UpDate.h"
 #include <algorithm>
 #include <cassert>
 #include <numbers>
@@ -430,7 +430,7 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner)
 	return center + offsetTable[static_cast<uint32_t>(corner)];
 }
 
-void Player::UpDate() 
+void Player::Update() 
 {
 
 
@@ -465,7 +465,7 @@ void Player::UpDate()
 	}
 
 
-	upData->WorldTransformUpData(worldTransform_);
+	upDate ->WorldTransformUpData(worldTransform_);
 }
 
 

@@ -2,7 +2,7 @@
 #include "KamataEngine.h"
 #include "MapChipField.h"
 #include "Math.h"
-#include "UpData.h"
+#include "UpDate.h"
 #include "Player.h"
 
 using namespace KamataEngine;
@@ -28,7 +28,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void UpDate();
+	void Update();
 
 	/// <summary>
 	/// 描画
@@ -65,7 +65,7 @@ private:
 	// モデル
 	Model* model_ = nullptr;
 
-	UpData* upData = nullptr;
+	UpDate* upDate = nullptr;
 
 	/*Player* player_ = nullptr;*/
 

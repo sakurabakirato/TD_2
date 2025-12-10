@@ -2,7 +2,7 @@
 #include "Skydome.h"
 
 #include "KamataEngine.h"
-#include "UpData.h"
+#include "UpDate.h"
 
 using namespace KamataEngine;
 
@@ -31,7 +31,7 @@ private:
 	Model* modelSpace_ = nullptr;
 	Model* modelOver_ = nullptr;
 
-	UpData* upData = nullptr;
+	UpDate* upData = nullptr;
 
 	Model* modelSkydome_ = nullptr;
 

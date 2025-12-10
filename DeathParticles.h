@@ -2,7 +2,7 @@
 
 #include "KamataEngine.h"
 #include "Math.h"
-#include "UpData.h"
+#include "UpDate.h"
 #include <algorithm>
 #include <array>
 #include <numbers>
@@ -58,7 +58,7 @@ private:
 	// 02_11_30枚目 色の数値
 	Vector4 color_ = {};
 
-	UpData* upData = nullptr;
+	UpDate* upDate = nullptr;
 
 	// ワールド変換データ
 	WorldTransform worldTransform_ = {};

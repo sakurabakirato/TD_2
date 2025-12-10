@@ -2,7 +2,7 @@
 #include "KamataEngine.h"
 #include "MapChipField.h"
 #include "Math.h"
-#include "UpData.h"
+#include "UpDate.h"
 
 #include <algorithm>
 #include <cassert>
@@ -42,7 +42,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void UpDate();
+	void Update();
 
 	/// <summary>
 	/// 描画
@@ -145,7 +145,7 @@ private:
 
 	Camera* camera_ = nullptr;
 
-	UpData* upData = nullptr;
+	UpDate* upDate = nullptr;
 
 	Vector3 velocity_ = {};
 

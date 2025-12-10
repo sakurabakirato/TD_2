@@ -2,7 +2,7 @@
 #include "KamataEngine.h"
 #include "MapChipField.h"
 #include "Math.h"
-#include "UpData.h"
+#include "UpDate.h"
 
 using namespace KamataEngine;
 

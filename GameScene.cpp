@@ -222,15 +222,15 @@ void GameScene::Update()
 	skydome_->Update();
 
 	//  自キャラの更新
-	player_->UpDate();
+	player_->Update();
 
 	for (Enemy* enemy : enemies_) 
 	{
-		enemy->UpDate();
+		enemy->Update();
 	}
 
 	//ボス更新
-	boss_->UpDate();
+	boss_->Update();
 
 
 
