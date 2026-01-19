@@ -1,5 +1,4 @@
 #include "Boss.h"
-
 #include "UpDate.h"
 #include <algorithm>
 #include <cassert>
@@ -91,41 +90,9 @@ void Boss::Update()
 	// 壁判定
 	CheckWallAndReverse();
 
-	//// 02_09 16枚目 移動
-	//worldTransform_.translation_ += velocity_;
+	
 
-	//// 02_09 20枚目
-	//walkTimer += 1.0f / 60.0f;
 
-	//// 02_09 23枚目 回転アニメーション
-	//// worldTransform_.rotation_.x = std::sin(std::numbers::pi_v<float> * 2.0f * walkTimer / kWalkMotionTime);
-
-	//float param = std::sin(std::numbers::pi_v<float> *2.0f * walkTimer / kWalkMotionTime);
-
-	//float degree = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
-
-	//worldTransform_.rotation_.x = degree * (std::numbers::pi_v<float> / 180.0f);
-
-	//// 02_09 スライド8枚目 ワールド行列更新
-	//upData->WorldTransformUpData(worldTransform_);
-
-// ---------------------------
- // ★ AABB（当たり判定）更新 ★
- // ---------------------------
-	Vector3 worldPos = GetWorldPosition();
-
-	aabb_.min = 
-	{
-		worldPos.x - kWidth / 2.0f,
-		worldPos.y - kHeight / 2.0f,
-		worldPos.z - kWidth / 2.0f
-	};
-	aabb_.max = 
-	{
-		worldPos.x + kWidth / 2.0f,
-		worldPos.y + kHeight / 2.0f,
-		worldPos.z + kWidth / 2.0f
-	};
 
 	// ==== ブロック落下攻撃タイマー ====
 	blockAttackTimer_++;
@@ -143,7 +110,7 @@ AABB Boss::GetAABB()
 
 	Vector3 worldPos = GetWorldPosition();
 
-	AABB aabb;
+	AABB aabb{};
 
 	aabb.min = { worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f };
 	aabb.max = { worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f };
@@ -188,7 +155,7 @@ void Boss::CheckWallAndReverse() {
 void Boss::OnDamage(int amount)
 {
 	hp_ -= amount;
-	if (hp_ <= 0) 
+	if (hp_ == 0) 
 	{
 		isDead = true;
 	}
@@ -240,7 +207,8 @@ void Boss::Draw()
 	if (isDead == 0)
 	{
 		model_->Draw(worldTransform_, *camera_);
-	} else
+	} 
+	else
 	{
 
 	}

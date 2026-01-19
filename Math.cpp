@@ -1,4 +1,5 @@
 #include "Math.h"
+#include <cassert>
 Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	Vector3 result = {};
 
@@ -283,6 +284,12 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	result.m[3][2] = 0.0f;
 	result.m[3][3] = 1.0f;
 	return result;
+}
+
+float z(float start, float end, float t) {
+	// tは0.0～1.0の範囲
+	t = t * t * (3.0f - 2.0f * t); // スムーズステップ
+	return start + (end - start) * t;
 }
 
 float EaseOut(float start, float end, float t) {

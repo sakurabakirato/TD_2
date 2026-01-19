@@ -13,7 +13,7 @@ GameClear* gameClear = nullptr;
 GameOver* gameOver = nullptr;
 
 // 02_12 25枚目(Scene sceneまで)
-enum class Scene 
+enum class Scene
 {
 	kUnknown = 0,
 	kTitle,
@@ -26,13 +26,13 @@ enum class Scene
 Scene scene = Scene::kUnknown;
 
 // 02_12 29枚目 
-void ChangeScene() 
+void ChangeScene()
 {
 
-	switch (scene) 
+	switch (scene)
 	{
 	case Scene::kTitle:
-		if (titleScene->IsFinished()) 
+		if (titleScene->IsFinished())
 		{
 			// シーン変更
 			scene = Scene::kGame;
@@ -44,29 +44,36 @@ void ChangeScene()
 		}
 		break;
 	case Scene::kGame:
-		if (gameScene && gameScene->IsFinished())
+		if (gameScene->IsFinishTime())
 		{
-			// GameScene から「どちらで終了したか」を取得する
-			if (gameScene->IsGameClear()) 
-			{
-				delete gameScene;
-				gameScene = nullptr;
+			titleScene = new TitleScene();
+			titleScene->Initialize();
+			scene = Scene::kClear;
 
-				gameClear = new GameClear();
-				gameClear->Initialize();
+			// ★★★ 追加 ★★★
+			gameClear = new GameClear();
+			gameClear->Initialize();
 
-				scene = Scene::kClear;
-			} 
-			else 
-			{
-				delete gameScene;
-				gameScene = nullptr;
+			delete gameScene;
+			gameScene = nullptr;
 
-				gameOver = new GameOver();
-				gameOver->Initialize();
+		} 
+		else if (gameScene->IsFinished())
+		{
 
-				scene = Scene::kOver;
-			}
+			scene = Scene::kOver;
+			titleScene = new TitleScene();
+			titleScene->Initialize();
+
+
+			// ★★★ 追加 ★★★
+			gameOver = new GameOver();
+			gameOver->Initialize();
+
+			delete gameScene;
+			gameScene = nullptr;
+
+
 		}
 		break;
 
@@ -99,10 +106,10 @@ void ChangeScene()
 }
 
 // 02_12 31枚目
-void UpDataScene() 
+void UpDataScene()
 {
 
-	switch (scene) 
+	switch (scene)
 	{
 	case Scene::kTitle:
 		titleScene->Update();
@@ -120,9 +127,9 @@ void UpDataScene()
 }
 
 // 02_12 32枚目
-void DrawScene() 
+void DrawScene()
 {
-	switch (scene) 
+	switch (scene)
 	{
 	case Scene::kTitle:
 		titleScene->Draw();
@@ -140,7 +147,8 @@ void DrawScene()
 }
 
 // Windowsアプリでのエントリーポイント(main関数)
-int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
+int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
+{
 
 	KamataEngine::Initialize();
 
@@ -153,11 +161,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// gameScene->Initialize();
 
 	// メインループ
-	while (true) 
+	while (true)
 	{
 
 		// エンジンの更新
-		if (KamataEngine::Update()) 
+		if (KamataEngine::Update())
 		{
 			break;
 		}

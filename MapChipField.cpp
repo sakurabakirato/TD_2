@@ -94,7 +94,7 @@ MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex
 
 	Vector3 center = GetMapChipPositionByIndex(xIndex, yIndex);
 
-	Rect rect;
+	Rect rect{};
 	rect.left = center.x - kBlockWidth / 2.0f;
 	rect.right = center.x + kBlockWidth / 2.0f;
 	rect.bottom = center.y - kBlockWidth / 2.0f;

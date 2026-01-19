@@ -2,7 +2,6 @@
 #include "Player.h"
 #include "Boss.h"
 #include "FallingBlock.h"
-#include "Enemy.h"
 #include "MapChipField.h"
 #include "Math.h"
 #include "UpDate.h"
@@ -653,29 +652,25 @@ AABB Player::GetAABB()
 	return aabb;
 }
 
-// 02_10 21枚目
-void Player::OnCollision(Enemy* enemy) 
-{
-
-	if (!enemy) { return; } // 念のため
-
-	// 攻撃中なら敵を倒す
-	if (IsAttack()) 
-	{
-		enemy->isDead = true;
-		return;
-	}
-
-	// 攻撃していないならプレイヤーが死ぬ
-	isDead_ = true;
-}
-
 void Player::OnCollision(Boss* boss)
 {
 
-	// ボスが死んでいるならダメージを受けない
-	if (boss->IsDead())
+	if (!boss) 
+	{
 		return;
+	} // 念のため
+	// 攻撃中なら敵を倒す
+	if (IsAttack())
+	{
+		// ボスが死んでいるならダメージを受けない
+		if (boss->hp_ == 0) 
+		{
+			boss->isDead = true;
+		}
+
+		return;
+	}
+
 
 	isDead_ = true;
 }

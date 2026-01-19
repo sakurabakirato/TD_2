@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Skydome.h"
 #include "KamataEngine.h"
 #include "UpDate.h"
 #include "Fade.h"
@@ -37,6 +37,9 @@ private:
 	Model* modelTitle_ = nullptr;
 
 	UpDate* upData = nullptr;
+
+	Skydome* skydome_ = nullptr;
+	Model* modelSkydome_ = nullptr;
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;

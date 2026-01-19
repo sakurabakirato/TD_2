@@ -1,6 +1,14 @@
 #include "GameScene.h"
+//#include<winddi.h>
+
+#include <string>
 
 using namespace KamataEngine;
+
+using namespace std;
+
+std::chrono::steady_clock::time_point lastTime;
+
 
 GameScene::~GameScene() 
 {
@@ -27,13 +35,6 @@ GameScene::~GameScene()
 	worldTransformBlocks_.clear();
 
 	delete mapChipField_;
-
-
-	// 02_10 6枚目 敵クラス削除
-	for (Enemy* enemy : enemies_) 
-	{
-		delete enemy;
-	}
 
 	delete boss_;
 
@@ -100,11 +101,6 @@ void GameScene::Initialize()
 	//  02_07 スライド5枚目
 	player_->SetMapChipField(mapChipField_);
 
-	// 02_09 10枚目 敵クラス
-	enemy_ = new Enemy();
-	// 02_09 10枚目 敵モデル
-	enemy_model_ = Model::CreateFromOBJ("enemy");
-
 	//ボスクラス
 	boss_ = new Boss();
 	//ボスモデル
@@ -113,18 +109,6 @@ void GameScene::Initialize()
 	Vector3 bossPosition = mapChipField_->GetMapChipPositionByIndex(14, 18);
 	boss_->Initialize(modelBoss_, &camera_, mapChipField_, bossPosition);
   
-	
-	// 02_10 5枚目（for文の中身全部）
-	for (int32_t i = 0; i < 3; ++i) 
-	{
-		Enemy* newEnemy = new Enemy();
-
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(14 + i * 3, 18);
-
-		newEnemy->Initialize(enemy_model_, &camera_, enemyPosition);
-
-		enemies_.push_back(newEnemy);
-	}
 
 	// 02_11_16枚目 モデル読み込み
 	deathParticle_model_ = Model::CreateFromOBJ("deathParticle");
@@ -139,6 +123,9 @@ void GameScene::Initialize()
 	fade_ = new Fade();
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
+
+	lastTime = std::chrono::steady_clock::now();
+
 }
 
 void GameScene::GenerateBlocks() 
@@ -168,8 +155,25 @@ void GameScene::GenerateBlocks()
 	}
 }
 
-void GameScene::Update() 
+void GameScene::Update()
 {
+//現在時間を取得
+auto now = std::chrono::steady_clock::now();
+std::chrono::duration<float> deltaTime = now - lastTime;
+
+if (finishTime_) {
+	return;
+}
+
+if (deltaTime.count() >= 1.0f) {
+	GameTimer--;
+	lastTime = now;
+}
+
+if (GameTimer <= 0) {
+	finishTime_ = true;
+	GameTimer=0;
+}
 	switch (phase_) 
 	{
 	case Phase::kPlay:
@@ -217,6 +221,7 @@ void GameScene::Update()
 		break;
 
 	}
+	
 
 	//  skydome生成
 	skydome_->Update();
@@ -224,14 +229,8 @@ void GameScene::Update()
 	//  自キャラの更新
 	player_->Update();
 
-	for (Enemy* enemy : enemies_) 
-	{
-		enemy->Update();
-	}
-
 	//ボス更新
 	boss_->Update();
-
 
 
 	ChangePhase();
@@ -314,9 +313,9 @@ void GameScene::Draw()
 	Model::PreDraw(dxCommon->GetCommandList());
 
 	// ブロックの描画
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) 
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_)
 	{
-		for (WorldTransform*& worldTransformBlock : worldTransformBlockLine) 
+		for (WorldTransform*& worldTransformBlock : worldTransformBlockLine)
 		{
 			if (!worldTransformBlock)
 				continue;
@@ -324,7 +323,7 @@ void GameScene::Draw()
 		}
 	}
 
-	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn) 
+	if (phase_ == Phase::kPlay || phase_ == Phase::kFadeIn)
 	{
 		player_->Draw();
 	}
@@ -337,11 +336,6 @@ void GameScene::Draw()
 	// 天球描画
 	skydome_->Draw();
 
-	for (Enemy* enemy : enemies_) 
-	{
-		enemy->Draw();
-	}
-
 
 	boss_->Draw();
 
@@ -352,7 +346,7 @@ void GameScene::Draw()
 	}
 
 	// 02_11 18枚目 デスパーティクルあれば描画
-	if (deathParticles_) 
+	if (deathParticles_)
 	{
 		deathParticles_->Draw();
 	}
@@ -369,40 +363,17 @@ void GameScene::CheckAllCollisions()
 	// 判定対象1と2の座標
 	AABB aabb1, aabb2;
 
-#pragma region 自キャラと敵キャラの当たり判定
-	{
-		// 自キャラの座標
-		aabb1 = player_->GetAABB();
 
-		// 自キャラと敵全ての当たり判定
-		for (Enemy* enemy : enemies_) 
-		{
-
-			if (enemy->isDead == 1) 
-			{
-				continue; // 死んでいる敵は当たり判定を行わない
-			}
-
-			// 敵の座標
-			aabb2 = enemy->GetAABB();
-
-			// AABB同士の交差判定
-			if (IsCollision(aabb1, aabb2)) 
-			{
-				// 自キャラの衝突時コールバックを呼び出す
-				player_->OnCollision(enemy);
-				// 敵の衝突時コールバックを呼び出す
-				enemy->OnCollision(player_);
-
-			}
-		}
-	}
-#pragma endregion
 
 #pragma region 自キャラとボスの当たり判定
 	{
 		if (!boss_->IsDead())   // これを追加！
 		{
+			if (boss_->isDead == 1) 
+			{
+				// 死んでいる敵は当たり判定を行わない
+				return; // ここで現在の処理を終了
+			}
 
 			// 自キャラの座標
 			aabb1 = player_->GetAABB();
@@ -456,6 +427,8 @@ void GameScene::ChangePhase()
 		// Initialize関数のいきなりパーティクル発生処理は消す
 		if (player_->IsDead()) 
 		{
+			Audio::GetInstance()->StopWave(voiceHandle);
+
 			// 死亡演出
 			phase_ = Phase::kDeath;
 
@@ -464,10 +437,16 @@ void GameScene::ChangePhase()
 			deathParticles_->Initialize(deathParticle_model_, &camera_, deathParticlesPosition);
 		}
 
-		if (boss_->IsDead())
+		/*if (boss_->IsDead())
 		{
 			phase_ = Phase::kGameClear;
 			fade_->Start(Fade::Status::FadeOut, 1.0f);
+		}*/
+
+		if (GameTimer == 0)
+		{
+			Audio::GetInstance()->StopWave(voiceHandle);
+			phase_ = Phase::kGameClear;
 		}
 
 
@@ -475,16 +454,19 @@ void GameScene::ChangePhase()
 	case Phase::kDeath:
 
 		// デスパーティクルが終了したらゲームオーバー
-		if (deathParticles_ && deathParticles_->IsFinished())
-		{
-			phase_ = Phase::kGameOver;
+		if (deathParticles_ && deathParticles_->IsFinished()){
 			fade_->Start(Fade::Status::FadeIn, 1.0f);   // ゲームオーバー画面をフェードイン
 		}
 
 		break;
 	case Phase::kGameClear:
+		
 		break;
+
 	case Phase::kGameOver:
+		if (player_->IsDead()) {
+			phase_ = Phase::kGameOver;
+		}
 		break;
 	}
 }

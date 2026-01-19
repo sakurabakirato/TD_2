@@ -52,13 +52,16 @@ public:
 	bool ShouldDropBlock() const { return canBlockAttack_; }
 	void ConsumeBlockAttack() { canBlockAttack_ = false; }
 
-	bool IsDead() const { return hp_ <= 0; }
+	bool IsDead() const { return hp_ == 0; }
 
 	void OnDamage(int amount);
 
 	bool IsCollisionDisabled() const { return isCollisionDisabled; }
 
 	bool isDead = false;
+
+	int hp_ = 2;
+
 
 private:
 	// ワールド変換データ
@@ -117,8 +120,6 @@ private:
 
 	int blockAttackTimer_ = 0;
 	bool canBlockAttack_ = true;
-
-	int hp_ = 2;
 
 
 

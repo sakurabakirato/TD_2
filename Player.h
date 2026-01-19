@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cassert>
 #include <numbers>
-#include "Enemy.h"
 
 class MapChipField;
 
@@ -74,7 +73,7 @@ public:
 	AABB GetAABB();
 
 	// 02_10 21枚目 衝突応答
-	void OnCollision(Enemy* enemy);
+	//void OnCollision(Enemy* enemy);
 	void OnCollision(Boss* boss);
 	void OnCollision(const FallingBlock* FallingBlock);
 

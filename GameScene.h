@@ -1,7 +1,6 @@
 #pragma once
 #include "CameraController.h"
 #include "DeathParticles.h"
-#include "Enemy.h"
 #include "MapChipField.h"
 #include "Player.h"
 #include "Skydome.h"
@@ -37,8 +36,9 @@ public:
 
 	// 02_12 26枚目	デスフラグのgetter
 	bool IsFinished() const { return finished_; }
-
-	bool IsGameClear() const { return isGameClear_; }
+	//時間で生きる
+	bool IsFinishTime()const { return finishTime_; };
+	//bool IsGameClear() const { return isGameClear_; }
 
 private:
 	enum class Phase 
@@ -52,7 +52,7 @@ private:
 	};
 
 	// 02_12 4枚目 ゲームの現在フェーズ（変数）
-	Phase phase_;
+	Phase phase_{};
 
 	////テクスチャーハンドル
 	uint32_t textureHandle_ = 0;
@@ -61,7 +61,7 @@ private:
 
 	//////3Dモデル
 	Model* model_ = nullptr;
-
+	//Matrix4x4 matWorld_;
 	// ブロックの3Dモデル
 	Model* blockModel_ = nullptr;
 
@@ -126,4 +126,7 @@ private:
 	uint32_t BGMHandle = 0;
 	uint32_t voiceHandle = 0;
 
+	float GameTimer = 10;
+	//時間でクリア
+	bool finishTime_ = false;
 };

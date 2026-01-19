@@ -15,6 +15,12 @@ void TitleScene::Initialize()
 	modelTitle_ = Model::CreateFromOBJ("titleFont", true);
 	modelPlayer_ = Model::CreateFromOBJ("player");
 
+	skydome_ = new Skydome();
+
+	modelSkydome_ = Model::CreateFromOBJ("skyDome", true);
+
+	skydome_->Initialize(modelSkydome_, &camera_);
+
 	// カメラ初期化
 	camera_.Initialize();
 
@@ -93,6 +99,9 @@ void TitleScene::Draw()
 
 	modelTitle_->Draw(worldTransformTitle_, camera_);
 	modelPlayer_->Draw(worldTransformPlayer_, camera_);
+
+	// 天球描画
+	skydome_->Draw();
 
 	Model::PostDraw();
 	fade_->Draw();

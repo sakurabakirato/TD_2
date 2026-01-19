@@ -10,6 +10,7 @@ GameClear::~GameClear()
 
 void GameClear::Initialize() 
 {
+	camera_.Initialize();
 
 	modelClear_ = Model::CreateFromOBJ("GameClear", true);
 	/*modelSpace_ = Model::CreateFromOBJ("space");*/
@@ -64,7 +65,7 @@ void GameClear::Update()
 	// アフィン変換～DirectXに転送(タイトル座標)
 	upDate->WorldTransformUpData(worldTransformSpace_);
 
-		//  skydome生成
+	//  skydome生成
 	skydome_->Update();
 }
 
