@@ -2,12 +2,14 @@
 #include "Math.h"
 #include <numbers>
 
-GameOver::~GameOver() {
+GameOver::~GameOver() 
+{
 	delete modelSpace_;
 	delete modelOver_;
 }
 
-void GameOver::Initialize() {
+void GameOver::Initialize() 
+{
 
 	modelOver_ = Model::CreateFromOBJ("GameOver", true);
 	/*modelSpace_ = Model::CreateFromOBJ("space");*/
@@ -24,13 +26,13 @@ void GameOver::Initialize() {
 
 	worldTransformOver_.Initialize();
 
-	worldTransformOver_.scale_ = {kPlayerOver, kPlayerOver, kPlayerOver};
+	worldTransformOver_.scale_ = { kPlayerOver, kPlayerOver, kPlayerOver };
 
 	const float kSpaceScale = 3.0f;
 
 	worldTransformSpace_.Initialize();
 
-	worldTransformSpace_.scale_ = {kSpaceScale, kSpaceScale, kSpaceScale};
+	worldTransformSpace_.scale_ = { kSpaceScale, kSpaceScale, kSpaceScale };
 
 	//worldTransformPlayer_.rotation_.y = 0.95f * std::numbers::pi_v<float>;
 
@@ -41,10 +43,11 @@ void GameOver::Initialize() {
 
 }
 
-void GameOver::Update() {
-
+void GameOver::Update() 
+{
 	// 02_12 27枚目
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE) && Input::GetInstance()->PushKey(DIK_SPACE)) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE) && Input::GetInstance()->PushKey(DIK_SPACE)) 
+	{
 		finished_ = true;
 	}
 
@@ -58,14 +61,14 @@ void GameOver::Update() {
 	camera_.TransferMatrix();
 
 	upData->WorldTransformUpData(worldTransformOver_);
-
 	// アフィン変換～DirectXに転送(タイトル座標)
 	upData->WorldTransformUpData(worldTransformSpace_);
 	//  skydome生成
 	skydome_->Update();
 }
 
-void GameOver::Draw() {
+void GameOver::Draw() 
+{
 
 	 DirectXCommon* dxCommon_ = DirectXCommon::GetInstance();
 	// コマンドリストの取得

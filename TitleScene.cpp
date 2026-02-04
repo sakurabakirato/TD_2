@@ -14,10 +14,9 @@ void TitleScene::Initialize()
 
 	modelTitle_ = Model::CreateFromOBJ("titleFont", true);
 	modelPlayer_ = Model::CreateFromOBJ("player");
+	modelSkydome_ = Model::CreateFromOBJ("skyDome", true);
 
 	skydome_ = new Skydome();
-
-	modelSkydome_ = Model::CreateFromOBJ("skyDome", true);
 
 	skydome_->Initialize(modelSkydome_, &camera_);
 
@@ -27,19 +26,14 @@ void TitleScene::Initialize()
 	const float kPlayerTitle = 2.0f;
 
 	worldTransformTitle_.Initialize();
-
 	worldTransformTitle_.scale_ = {kPlayerTitle, kPlayerTitle, kPlayerTitle};
 
 	const float kPlayerScale = 10.0f;
 
 	worldTransformPlayer_.Initialize();
-
 	worldTransformPlayer_.scale_ = {kPlayerScale, kPlayerScale, kPlayerScale};
-
 	worldTransformPlayer_.rotation_.y = 0.95f * std::numbers::pi_v<float>;
-
 	worldTransformPlayer_.translation_.x = -2.0f;
-
 	worldTransformPlayer_.translation_.y = -10.0f;
 
 	fade_ = new Fade();

@@ -66,10 +66,8 @@ public:
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
-
 	// モデル
 	Model* model_ = nullptr;
-
 	UpDate* upDate = nullptr;
 
 	// テクスチャハンドル
@@ -85,11 +83,9 @@ private:
 	// 02_09 19枚目
 	// 最初の角度
 	static inline const float kWalkMotionAngleStart = -10.0f;
-
 	// 02_09 19枚目
 	// 最後の角度
 	static inline const float kWalkMotionAngleEnd = 40.0f;
-
 	// 02_09 19枚目
 	static inline const float kWalkMotionTime = 1.0f;
 	// 02_09 20枚目
@@ -112,7 +108,6 @@ private:
 	Behavior behavior = Behavior::kWalk;
 	// 次の振るまいリクエスト
 	Behavior behaviorRequest = Behavior::kUnknown;
-
 
 	MapChipField* mapChipField_ = nullptr;
 

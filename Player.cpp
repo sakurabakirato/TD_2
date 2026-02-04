@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cassert>
 #include <numbers>
+#include "Windows.h"
 
 using namespace KamataEngine;
 
@@ -33,7 +34,6 @@ void Player::InputMove()
 {
 	if (onGround_) 
 	{
-
 		// 左右操作
 		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) 
 		{
@@ -45,7 +45,8 @@ void Player::InputMove()
 				{
 					velocity_.x *= (1.0f - kAttenuation);
 				}
-				acceleration.x += kAcceleration / 60.0f;
+				/*acceleration.x += kAcceleration / 60.0f;*/
+				acceleration.x += (kAcceleration * speedRate_) / 60.0f;
 				if (lrDirection_ != LRDirection::kRight) 
 				{
 					lrDirection_ = LRDirection::kRight;
@@ -61,7 +62,8 @@ void Player::InputMove()
 				{
 					velocity_.x *= (1.0f - kAttenuation);
 				}
-				acceleration.x -= kAcceleration / 60.0f;
+				/*acceleration.x -= kAcceleration / 60.0f;*/
+				acceleration.x -= (kAcceleration * speedRate_) / 60.0f;
 				if (lrDirection_ != LRDirection::kLeft) 
 				{
 					lrDirection_ = LRDirection::kLeft;
@@ -72,12 +74,13 @@ void Player::InputMove()
 			}
 			velocity_ = Add(velocity_, acceleration);
 
-			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed * speedRate_, kLimitRunSpeed * speedRate_);
 		} 
 		else 
 		{
 			// 非入力時は移動減衰をかける
-			velocity_.x *= (1.0f - kAcceleration);
+			/*velocity_.x *= (1.0f - kAcceleration);*/
+			velocity_.x *= (1.0f - kAttenuation);
 		}
 
 		// ほぼ0の場合に0にする
@@ -98,6 +101,9 @@ void Player::InputMove()
 		velocity_ = Add(Vector3(0, -kGravityAcceleration / 60.0f, 0), velocity_);
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
+	char buf[64];
+	sprintf_s(buf, "speedRate = %.2f\n", speedRate_);
+	OutputDebugStringA(buf);
 }
 
 // 02_07 スライド13枚目
@@ -682,6 +688,13 @@ void Player::OnCollision(const FallingBlock* FallingBlock)
 	isDead_ = true;
 }
 
+void Player::OnCollision(Trap* trap)
+{
+	(void)trap;
+
+	isDead_ = true;
+}
+
 bool Player::IsAttack() 
 {
 	if (behavior_ == Behavior::kAttack) 
@@ -689,6 +702,30 @@ bool Player::IsAttack()
 		return true;
 	}
 	return false;
+}
+
+void Player::ApplySlotEffect(SlotEffect effect)
+{
+
+	switch (effect)
+	{
+	case SlotEffect::SpeedUp:
+		speedRate_ = 5.0f; // 2倍
+		OutputDebugStringA("Speed UP applied\n");
+		break;
+	case SlotEffect::AttackDown:
+		attackPower_ -= 1;
+		if (attackPower_ < 1)
+		{
+			attackPower_ = 1;
+		}
+		break;
+
+	case SlotEffect::None:
+	default:
+		// 何もしない
+		break;
+	}
 }
 
 void Player::AnimateTurn()

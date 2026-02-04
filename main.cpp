@@ -44,11 +44,30 @@ void ChangeScene()
 		}
 		break;
 	case Scene::kGame:
-		if (gameScene->IsFinishTime())
+		if (gameScene->IsDead())
 		{
+
+			scene = Scene::kClear;
+
 			titleScene = new TitleScene();
 			titleScene->Initialize();
+
+
+			// ★★★ 追加 ★★★
+			gameClear = new GameClear();
+			gameClear->Initialize();
+
+			delete gameScene;
+			gameScene = nullptr;
+
+		} 
+		else if (gameScene->IsFinishTime())
+		{
+
 			scene = Scene::kClear;
+
+			titleScene = new TitleScene();
+			titleScene->Initialize();
 
 			// ★★★ 追加 ★★★
 			gameClear = new GameClear();
@@ -62,6 +81,7 @@ void ChangeScene()
 		{
 
 			scene = Scene::kOver;
+
 			titleScene = new TitleScene();
 			titleScene->Initialize();
 
@@ -76,7 +96,6 @@ void ChangeScene()
 
 		}
 		break;
-
 	case Scene::kClear:
 		if (gameClear && gameClear->IsFinished())
 		{
@@ -89,7 +108,6 @@ void ChangeScene()
 			scene = Scene::kTitle;
 		}
 		break;
-
 	case Scene::kOver:
 		if (gameOver && gameOver->IsFinished())
 		{
@@ -108,7 +126,6 @@ void ChangeScene()
 // 02_12 31枚目
 void UpDataScene()
 {
-
 	switch (scene)
 	{
 	case Scene::kTitle:
@@ -163,7 +180,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	// メインループ
 	while (true)
 	{
-
 		// エンジンの更新
 		if (KamataEngine::Update())
 		{

@@ -7,41 +7,43 @@
 #include "Fade.h"
 #include "Boss.h"
 #include "FallingBlock.h"
+#include "SlotSystem.h"
+#include "Trap.h"
 #include <KamataEngine.h>
 
 using namespace KamataEngine;
 
 // ゲームシーン
-class GameScene 
+class GameScene
 {
 public:
 	// 初期化
 	void Initialize();
-
 	// 更新
 	void Update();
-
 	// 描画
 	void Draw();
 
 	~GameScene();
 
 	void GenerateBlocks();
-
 	// 02_10 16枚目 衝突判定と応答
 	void CheckAllCollisions();
-
 	// 02_12 9枚目
 	void ChangePhase();
-
 	// 02_12 26枚目	デスフラグのgetter
 	bool IsFinished() const { return finished_; }
 	//時間で生きる
 	bool IsFinishTime()const { return finishTime_; };
 	//bool IsGameClear() const { return isGameClear_; }
+	bool IsDead() const { return isDead; }
+	bool isDead = false;
+
+	//ランダム
+	Vector3 GetRandomBossPosition();
 
 private:
-	enum class Phase 
+	enum class Phase
 	{
 		kFadeIn,
 		kPlay, // ゲームプレイ
@@ -58,64 +60,60 @@ private:
 	uint32_t textureHandle_ = 0;
 
 	Sprite* sprite_ = nullptr;
-
-	//////3Dモデル
-	Model* model_ = nullptr;
-	//Matrix4x4 matWorld_;
-	// ブロックの3Dモデル
-	Model* blockModel_ = nullptr;
+	UpDate* upDate = nullptr;
 
 	WorldTransform worldTransform_;
 
-	////カメラ
+	//カメラ
 	Camera camera_;
-
-	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
 	DebugCamera* debugCamera_ = nullptr;
 
-	// 自キャラ
+	//オブジェクトの個数
+	static const int kBossCount = 10;
+	static const int kTrapCount = 10;
+	//自キャラ
 	Player* player_ = nullptr;
-
-	// 02_09 10枚目 エネミークラス
+	//敵
 	Enemy* enemy_ = nullptr;
-
 	//ボス
-	Boss* boss_ = nullptr;
+	/*Boss* boss_ = nullptr;*/
+	//スロット
+	SlotSystem* slot_ = nullptr;
+	//天球
+	Skydome* skydome_ = nullptr;
+	//ボス
+	Boss* bosses_[kBossCount];
+	//トラップ
+	Trap* trap_[kTrapCount];
 
-	// Math* math_ = nullptr;
+	MapChipField* mapChipField_;
+	CameraController* CController_ = nullptr;
+	DeathParticles* deathParticles_ = nullptr;
+	Fade* fade_ = nullptr;
 
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
 
-	Skydome* skydome_ = nullptr;
-
+	//-----------------------3Dモデル--------------------------//
+	Model* model_ = nullptr;
+	Model* blockModel_ = nullptr;
 	Model* modelSkydome_ = nullptr;
-
 	Model* modelPlayer_ = nullptr;
-
 	Model* enemy_model_ = nullptr;
-
 	Model* modelBoss_ = nullptr;
-
-	MapChipField* mapChipField_;
-
-	CameraController* CController_ = nullptr;
-
-	std::list<Enemy*> enemies_;
-
-	DeathParticles* deathParticles_ = nullptr;
-
-	// 02_11 16枚目
+	Model* modelSlot_ = nullptr;
 	Model* deathParticle_model_ = nullptr;
+	Model* fallingBlockModel_ = nullptr;
+	Model* trapModel_ = nullptr;
+	//--------------------------------------------------------//
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	std::list<Enemy*> enemies_;
+	std::vector<FallingBlock*> fallingBlocks_;
+	std::vector<Trap*> traps_;
 
 	// 02_12 26枚目
 	bool finished_ = false;
-
-	Fade* fade_ = nullptr;
-
-	std::vector<FallingBlock*> fallingBlocks_;
-	Model* fallingBlockModel_ = nullptr;
 
 	Sprite* gameClearSprite_ = nullptr;
 	Sprite* gameOverSprite_ = nullptr;
@@ -126,7 +124,19 @@ private:
 	uint32_t BGMHandle = 0;
 	uint32_t voiceHandle = 0;
 
-	float GameTimer = 10;
+	float GameTimer = 60;
 	//時間でクリア
 	bool finishTime_ = false;
+
+	Input* input = Input::GetInstance();
+
+	// ===== スロット制御 =====
+	float slotTimer_ = 0.0f;
+	bool isSlotSpinning_ = false;
+	static constexpr float kSlotSpinTime_ = 2.0f; // 2秒回す
+
+	bool slotResultApplied_ = false;
+
+	Vector3 trapPosition;
+
 };

@@ -3,6 +3,7 @@
 #include "MapChipField.h"
 #include "Math.h"
 #include "UpDate.h"
+#include "SlotSystem.h"
 
 #include <algorithm>
 #include <cassert>
@@ -16,6 +17,7 @@ using namespace KamataEngine;
 class Enemy;
 class Boss;
 class FallingBlock;
+class Trap;
 
 class Player 
 {
@@ -76,6 +78,7 @@ public:
 	//void OnCollision(Enemy* enemy);
 	void OnCollision(Boss* boss);
 	void OnCollision(const FallingBlock* FallingBlock);
+	void OnCollision(Trap* trap);
 
 	// 02_12 11枚目 デスフラグ
 	bool IsDead() const 
@@ -133,6 +136,9 @@ public:
 	AttackPhase attackPhase = AttackPhase::kUnknown;
 	AttackPhase attackPhaseRequest = AttackPhase::kUnknown;
 
+	void ApplySlotEffect(SlotEffect effect);
+
+	int GetAttackPower() const { return attackPower_; }
 
 private:
 
@@ -159,7 +165,7 @@ private:
 
 	// 速度制限
 	//  02_05 最高速度
-	static inline const float kLimitRunSpeed = 0.3f;
+	float kLimitRunSpeed = 0.3f;
 
 	// 旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
@@ -242,5 +248,10 @@ private:
 
 	// 攻撃ギミックの媒介変数
 	uint32_t attackParameter = 0;
+
+	
+	int attackPower_ = 1;
+	
+	float speedRate_ = 1.0f; // スロット補正
 
 };

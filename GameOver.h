@@ -6,7 +6,8 @@
 
 using namespace KamataEngine;
 
-class GameOver {
+class GameOver 
+{
 public:
 	~GameOver();
 
@@ -34,8 +35,6 @@ private:
 	UpDate* upData = nullptr;
 
 	Model* modelSkydome_ = nullptr;
-
-	
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;

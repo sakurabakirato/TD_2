@@ -10,12 +10,10 @@ void Boss::Initialize(Model* model, Camera* camera, MapChipField* mapChipField, 
 {
 
 	assert(model);
-
 	// 02_09 7枚目
 	model_ = model;
 	// 02_09 7枚目
 	camera_ = camera;
-
 	mapChipField_ = mapChipField;
 
 	// 02_09 7枚目
@@ -32,7 +30,6 @@ void Boss::Initialize(Model* model, Camera* camera, MapChipField* mapChipField, 
 	// 02_09 20枚目
 	walkTimer = 0.0f;
 
-
 	// ---- AABB 初期化 ----
 	const float halfSize = 0.5f; // ボスの大きさに応じて調整
 	aabb_.min = { position.x - halfSize, position.y - halfSize, position.z - halfSize };
@@ -43,8 +40,6 @@ void Boss::Initialize(Model* model, Camera* camera, MapChipField* mapChipField, 
 // 02_09 スライド5枚目
 void Boss::Update() 
 {
-
-
 	// 変更リクエストがあったら
 	if (behaviorRequest != Behavior::kUnknown)
 	{
@@ -90,10 +85,6 @@ void Boss::Update()
 	// 壁判定
 	CheckWallAndReverse();
 
-	
-
-
-
 	// ==== ブロック落下攻撃タイマー ====
 	blockAttackTimer_++;
 	if (blockAttackTimer_ > 180)  // 3秒に1回発射
@@ -101,13 +92,11 @@ void Boss::Update()
 		canBlockAttack_ = true;
 		blockAttackTimer_ = 0;
 	}
-
 }
 
 // 02_10 スライド14枚目
 AABB Boss::GetAABB() 
 {
-
 	Vector3 worldPos = GetWorldPosition();
 
 	AABB aabb{};
@@ -119,8 +108,8 @@ AABB Boss::GetAABB()
 }
 
 
-void Boss::CheckWallAndReverse() {
-
+void Boss::CheckWallAndReverse() 
+{
 	// 現在位置からAABBを取得
 	AABB aabb = GetAABB();
 
@@ -131,21 +120,23 @@ void Boss::CheckWallAndReverse() {
 	MapChipField::IndexSet index = mapChipField_->GetMapChipIndexSetByPosition(pos);
 
 	// 左側のタイル
-	if (velocity_.x < 0) {
-		if (mapChipField_->GetMapChipTypeByIndex(index.xIndex - 1, index.yIndex) == MapChipType::kBlock) {
+	if (velocity_.x < 0) 
+	{
+		if (mapChipField_->GetMapChipTypeByIndex(index.xIndex - 1, index.yIndex) == MapChipType::kBlock) 
+		{
 			velocity_.x = +kWalkSpeed;
 			isFacingRight_ = true;
 		}
 	}
-
 	// 右側のタイル
-	if (velocity_.x > 0) {
-		if (mapChipField_->GetMapChipTypeByIndex(index.xIndex + 1, index.yIndex) == MapChipType::kBlock) {
+	if (velocity_.x > 0) 
+	{
+		if (mapChipField_->GetMapChipTypeByIndex(index.xIndex + 1, index.yIndex) == MapChipType::kBlock) 
+		{
 			velocity_.x = -kWalkSpeed;
 			isFacingRight_ = false;
 		}
 	}
-
 	// モデルの向きを方向に合わせる
 	worldTransform_.rotation_.y = isFacingRight_
 		? std::numbers::pi_v<float> / 2.0f
@@ -164,7 +155,6 @@ void Boss::OnDamage(int amount)
 // 02_10 スライド14枚目
 Vector3 Boss::GetWorldPosition()
 {
-
 	Vector3 worldPos{};
 
 	// ワールド行列の平行移動成分を取得（ワールド座標）
@@ -178,24 +168,33 @@ Vector3 Boss::GetWorldPosition()
 // 02_10 スライド20枚目
 void Boss::OnCollision(Player* player)
 {
-	(void)player;
-
-	// desu
-	if (behavior == Behavior::kDefeated)
+	if (!player) 
 	{
 		return;
 	}
-	isDead = true;
+
+	// すでに倒れていたら何もしない
+	if (behavior == Behavior::kDefeated) 
+	{
+		return;
+	}
+
+	// プレイヤーが攻撃中ならダメージ
 	if (player->IsAttack())
 	{
+		int damage = player->GetAttackPower();
+		OnDamage(damage);
 
-		if (gameScene == 1)
+		char buf[64];
+		sprintf_s(buf, "Boss Damage = %d / HP = %d\n", damage, hp_);
+		OutputDebugStringA(buf);
+
+		// HP0で撃破
+		if (hp_ <= 0)
 		{
-			//敵と自キャラの中間位置にエフェクトを生成
-			//Vector3 effectPos = ((GetWorldPosition() + player_->GetWorldPosition())/2.0f);
+			behaviorRequest = Behavior::kDefeated;
+			isCollisionDisabled = true;
 		}
-		behaviorRequest = Behavior::kDefeated;
-		isCollisionDisabled = true;
 	}
 }
 
