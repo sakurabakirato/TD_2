@@ -15,6 +15,9 @@ void TitleScene::Initialize()
 	modelTitle_ = Model::CreateFromOBJ("titleFont", true);
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	modelSkydome_ = Model::CreateFromOBJ("skyDome", true);
+	// サウンドデータの読み込み
+	BGMHandle = Audio::GetInstance()->LoadWave("sound/1123.mp3");
+	voiceHandle = Audio::GetInstance()->PlayWave(BGMHandle, true, 0.1f);
 
 	skydome_ = new Skydome();
 
@@ -50,6 +53,8 @@ void TitleScene::Update()
 		{
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, 1.0f);
+			// Gameの音を止める
+			Audio::GetInstance()->StopWave(voiceHandle);
 		}
 		break;
 	case Phase::kFadeIn:

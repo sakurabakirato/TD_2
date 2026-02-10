@@ -42,4 +42,9 @@ private:
 	float counter_ = 0.0f;
 	// 02_12 26枚目
 	bool finished_ = false;
+
+	//BGM
+	uint32_t BGMHandle = 0;
+	uint32_t voiceHandle = 0;
+
 };

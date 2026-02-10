@@ -4,11 +4,14 @@
 
 using namespace KamataEngine;
 
-void SlotSystem::Initialize(Model* model, Camera* camera, const Vector3& position)
+void SlotSystem::Initialize(Model* models[kSymbolCount],Camera* camera, const Vector3& position)
 {
-	assert(model);
+	assert(models);
 
-	model_ = model;
+	for (int i = 0; i < kSymbolCount; i++)
+	{
+		models_[i] = models[i];
+	}
 	camera_ = camera;
 	basePosition_ = position;
 
@@ -67,7 +70,9 @@ void SlotSystem::Draw()
 {
 	for (int i = 0; i < kReelCount; i++) 
 	{
-		model_->Draw(worldTransforms_[i], *camera_);
+		/*model_->Draw(worldTransforms_[i], *camera_);*/
+		int symbol = reels_[i].symbolIndex;
+		models_[symbol]->Draw(worldTransforms_[i], *camera_);
 	}
 }
 

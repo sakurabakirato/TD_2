@@ -139,4 +139,9 @@ private:
 
 	Vector3 trapPosition;
 
+	Model* modelSlotA_;
+	Model* modelSlotB_;
+	Model* modelSlotC_;
+
+
 };

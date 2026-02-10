@@ -51,13 +51,18 @@ void GameScene::Initialize()
 	modelBoss_ = Model::CreateFromOBJ("boss");/*ボスモデル*/
 	blockModel_ = Model::CreateFromOBJ("block");/*ブロック*/
 	fallingBlockModel_ = Model::CreateFromOBJ("block");/*落ちてくるブロック*/
-	modelSlot_ = Model::CreateFromOBJ("block");
 	deathParticle_model_ = Model::CreateFromOBJ("deathParticle");/*デス時のパーティクル*/
 	trapModel_ = Model::CreateFromOBJ("block");/*トラップ*/
+	modelSlotA_ = Model::CreateFromOBJ("speed");
+	modelSlotB_ = Model::CreateFromOBJ("power");
+	modelSlotC_ = Model::CreateFromOBJ("none");
 
 	// サウンドデータの読み込み
-	BGMHandle = Audio::GetInstance()->LoadWave("sound/maou_game_village10.mp3");
-	voiceHandle = Audio::GetInstance()->PlayWave(BGMHandle, true, 0.2f);
+	/*BGMHandle = Audio::GetInstance()->LoadWave("sound/maou_game_village10.mp3");*/
+	// サウンドデータの読み込み
+	BGMHandle = Audio::GetInstance()->LoadWave("sound/1123.mp3");
+	voiceHandle = Audio::GetInstance()->PlayWave(BGMHandle, true, 0.1f);
+	/*voiceHandle = Audio::GetInstance()->PlayWave(BGMHandle, true, 0.2f);*/
 
 	debugCamera_ = new DebugCamera(1280, 720);
 
@@ -103,8 +108,16 @@ void GameScene::Initialize()
 	slotPosition.x = 6.0f;
 	slotPosition.y = 3.0f;
 	slotPosition.z = -3.0f;
+
+	// スロット用モデル配列
+	Model* slotModels[3] = {
+		modelSlotA_,
+		modelSlotB_,
+		modelSlotC_
+	};
+
 	// 初期化（Bossと同じ形式）
-	slot_->Initialize(modelSlot_, &camera_, slotPosition);
+	slot_->Initialize(slotModels, &camera_, slotPosition);
 
 	// 02_11_16枚目 仮の生成処理 後で消す
 	deathParticles_ = new DeathParticles();
@@ -294,6 +307,8 @@ void GameScene::Update()
 		if (fade_->IsFinished())
 		{
 			finished_ = true;
+			// Gameの音を止める
+			Audio::GetInstance()->StopWave(voiceHandle);
 		}
 		break;
 	}
@@ -556,6 +571,7 @@ void GameScene::ChangePhase()
 	case Phase::kPlay:
 		if (player_->IsDead())
 		{
+
 			//音を止める
 			Audio::GetInstance()->StopWave(voiceHandle);
 
@@ -565,9 +581,14 @@ void GameScene::ChangePhase()
 			const Vector3& deathParticlesPosition = player_->GetWorldPosition();
 
 			deathParticles_->Initialize(deathParticle_model_, &camera_, deathParticlesPosition);
+
+			// Gameの音を止める
+			Audio::GetInstance()->StopWave(voiceHandle);
 		}
 		if (GameTimer == 0)
 		{
+			// Gameの音を止める
+			Audio::GetInstance()->StopWave(voiceHandle);
 			// 画面暗くする
 			fade_->Start(Fade::Status::FadeIn, 1.0f);
 			// 敵が死んでクリアに
@@ -575,6 +596,11 @@ void GameScene::ChangePhase()
 		}
 		if (IsDead())
 		{
+			// Gameの音を止める
+			Audio::GetInstance()->StopWave(voiceHandle);
+
+			// Gameの音を止める
+			Audio::GetInstance()->StopWave(voiceHandle);
 			// 画面暗くする
 			fade_->Start(Fade::Status::FadeIn, 1.0f);
 			// 敵が死んでクリアに

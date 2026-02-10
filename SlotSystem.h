@@ -15,13 +15,14 @@ enum class SlotEffect
 class SlotSystem
 {
 public:
+	static inline const int kSymbolCount = 3;   // 絵柄数
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="model_"></param>
 	/// <param name="camera_"></param>
 	/// <param name="position"></param>
-	void Initialize(Model* model, Camera* camera, const Vector3& position);
+	void Initialize(Model* models[kSymbolCount], Camera* camera, const Vector3& position);
 
 	/// <summary>
 	/// 更新
@@ -63,7 +64,6 @@ private:
 
 	// ===== 定数 =====
 	static inline const int kReelCount = 3;     // リール数
-	static inline const int kSymbolCount = 5;   // 絵柄数
 
 	// ===== 内部構造 =====
 	struct Reel
@@ -82,7 +82,7 @@ private:
 	WorldTransform worldTransforms_[kReelCount];
 
 	// ===== 描画関連 =====
-	Model* model_ = nullptr;
+	Model* models_[kSymbolCount] = {};
 	Camera* camera_ = nullptr;
 	UpDate* upDate = nullptr;
 

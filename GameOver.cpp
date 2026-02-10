@@ -18,6 +18,9 @@ void GameOver::Initialize()
 	modelSkydome_ = Model::CreateFromOBJ("skyDome", true);
 	skydome_->Initialize(modelSkydome_, &camera_);
 
+	// サウンドデータの読み込み
+	BGMHandle = Audio::GetInstance()->LoadWave("sound/1123.mp3");
+	voiceHandle = Audio::GetInstance()->PlayWave(BGMHandle, true, 0.1f);
 
 	// カメラ初期化
 	camera_.Initialize();
@@ -48,6 +51,8 @@ void GameOver::Update()
 	// 02_12 27枚目
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE) && Input::GetInstance()->PushKey(DIK_SPACE)) 
 	{
+		// Gameの音を止める
+		Audio::GetInstance()->StopWave(voiceHandle);
 		finished_ = true;
 	}
 

@@ -51,4 +51,8 @@ private:
 	Fade* fade_ = nullptr;
 
 	Phase phase_ = Phase::kFadeIn;
+
+	//BGM
+	uint32_t BGMHandle = 0;
+	uint32_t voiceHandle = 0;
 };
